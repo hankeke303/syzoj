@@ -95,11 +95,13 @@ app.get('/contest/:id/edit', async (req, res) => {
     let contest_id = parseInt(req.params.id);
     let contest = await Contest.findById(contest_id);
     if (!contest) {
+      // if contest does not exist, only system administrators can create one
       if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_problem')) throw new ErrorMessage('您没有权限进行此操作。');
       contest = await Contest.create();
       contest.id = 0;
       contest.read_rating = true;
     } else {
+      // if contest exists, both system administrators and contest administrators can edit it.
       if (!await contest.isAllowedManageBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
       if (contest_id < 0) throw new ErrorMessage('错误的比赛编号！');
       await contest.loadRelationships();
@@ -132,6 +134,7 @@ app.post('/contest/:id/edit', async (req, res) => {
     let ranklist = null;
     let ranklist2 = null;
     if (!contest) {
+      // if contest does not exist, only system administrators can create one
       if (contest_id < 0) throw new ErrorMessage('错误的比赛编号！');
       contest = await Contest.create();
 
@@ -146,6 +149,9 @@ app.post('/contest/:id/edit', async (req, res) => {
       if (!['noi', 'ioi', 'acm'].includes(req.body.type)) throw new ErrorMessage('无效的赛制。');
       contest.type = req.body.type;
     } else {
+      // if contest exists, both system administrators and contest administrators can edit it.
+      if (!res.locals.user || (!res.locals.user.is_admin && !contest.admins.includes(res.locals.user.id.toString()))) throw new ErrorMessage('您没有权限进行此操作。');
+      
       await contest.loadRelationships();
       ranklist = contest.ranklist;
       ranklist2 = contest.ranklist2;
@@ -195,6 +201,7 @@ app.get('/contest/:id', async (req, res) => {
 
     let contest = await Contest.findById(contest_id);
     if (!contest) throw new ErrorMessage('无此比赛。');
+    // if contest is non-public, both system administrators and contest administrators can see it.
     if (!await contest.isAllowedUseBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
     if (!contest.is_public && (!res.locals.user || !(await contest.isAllowedManageBy(curUser)))) throw new ErrorMessage('比赛未公开，请耐心等待 (´∀ `)');
 
@@ -301,6 +308,7 @@ app.get('/contest/:id/ranklist', async (req, res) => {
     const curUser = res.locals.user;
 
     if (!contest) throw new ErrorMessage('无此比赛。');
+    // if contest is non-public, both system administrators and contest administrators can see it.
     if (!await contest.isAllowedUseBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
     if (!contest.is_public && (!res.locals.user || !(await contest.isAllowedManageBy(curUser)))) throw new ErrorMessage('比赛未公开，请耐心等待 (´∀ `)');
     if ([contest.allowedSeeingResult() && contest.allowedSeeingOthers(),
@@ -439,6 +447,7 @@ app.get('/contest/:id/submissions', async (req, res) => {
     let contest = await Contest.findById(contest_id);
     const curUser = res.locals.user;
 
+    // if contest is non-public, both system administrators and contest administrators can see it.
     if (!contest) throw new ErrorMessage('无此比赛。');
     if (!await contest.isAllowedUseBy(curUser)) throw new ErrorMessage('您没有权限进行此操作。');
     if (!contest.is_public && (!curUser || !(await contest.isAllowedManageBy(curUser)))) throw new ErrorMessage('比赛未公开，请耐心等待 (´∀ `)');
