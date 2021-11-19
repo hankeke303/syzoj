@@ -129,13 +129,13 @@ app.post('/contest/:id/edit', async (req, res) => {
 
     let contest_id = parseInt(req.params.id);
     let contest = await Contest.findById(contest_id);
-    if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_problem')) throw new ErrorMessage('您没有权限进行此操作。');
     
     let ranklist = null;
     let ranklist2 = null;
     if (!contest) {
       // if contest does not exist, only system administrators can create one
       if (contest_id < 0) throw new ErrorMessage('错误的比赛编号！');
+      if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_problem')) throw new ErrorMessage('您没有权限进行此操作。');
       contest = await Contest.create();
 
       contest.holder_id = res.locals.user.id;
@@ -150,7 +150,7 @@ app.post('/contest/:id/edit', async (req, res) => {
       contest.type = req.body.type;
     } else {
       // if contest exists, both system administrators and contest administrators can edit it.
-      if (!res.locals.user || (!res.locals.user.is_admin && !contest.admins.includes(res.locals.user.id.toString()))) throw new ErrorMessage('您没有权限进行此操作。');
+      if (!res.locals.user || !await contest.isAllowedManageBy(res.locals.user)) throw new ErrorMessage('您没有权限进行此操作。');
       
       await contest.loadRelationships();
       ranklist = contest.ranklist;
