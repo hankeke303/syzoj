@@ -697,6 +697,7 @@ export default class Problem extends Model {
 
     await entityManager.query('DELETE FROM `judge_state`           WHERE `problem_id` = ' + this.id);
     await entityManager.query('DELETE FROM `problem_tag_map`       WHERE `problem_id` = ' + this.id);
+    await entityManager.query('DELETE FROM `problem_group_map`     WHERE `problem_id` = ' + this.id);
     await entityManager.query('DELETE FROM `article`               WHERE `problem_id` = ' + this.id);
     await entityManager.query('DELETE FROM `submission_statistics` WHERE `problem_id` = ' + this.id);
 
