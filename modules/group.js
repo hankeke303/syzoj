@@ -2,7 +2,7 @@ let Group = syzoj.model('group');
 
 app.get('/group/:id/edit', async (req, res) => {
   try {
-    if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_group')) throw new ErrorMessage('您没有权限进行此操作。');
+    if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_problem')) throw new ErrorMessage('您没有权限进行此操作。');
 
     let id = parseInt(req.params.id) || 0;
     let group = await Group.findById(id);
@@ -25,7 +25,7 @@ app.get('/group/:id/edit', async (req, res) => {
 
 app.post('/group/:id/edit', async (req, res) => {
   try {
-    if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_group')) throw new ErrorMessage('您没有权限进行此操作。');
+    if (!res.locals.user || !await res.locals.user.hasPrivilege('manage_problem')) throw new ErrorMessage('您没有权限进行此操作。');
 
     let id = parseInt(req.params.id) || 0;
     let group = await Group.findById(id);
