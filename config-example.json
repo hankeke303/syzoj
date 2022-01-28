@@ -127,5 +127,7 @@
   "username_regex": "^[a-zA-Z0-9\\-\\_]+$",
   "site_for_download": "",
   "renderer_cache_size": "30000",
-  "divine": true
+  "divine": true,
+  "icp_beian_id": "@ICP_BEIAN_ID@",
+  "icp_beian_url": "@ICP_BEIAN_URL@"
 }
