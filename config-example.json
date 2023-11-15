@@ -129,5 +129,6 @@
   "renderer_cache_size": "30000",
   "divine": true,
   "icp_beian_id": "@ICP_BEIAN_ID@",
-  "icp_beian_url": "@ICP_BEIAN_URL@"
+  "icp_beian_url": "@ICP_BEIAN_URL@",
+  "luogu_openapi_token": ""
 }

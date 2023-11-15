@@ -545,6 +545,7 @@ app.get('/contest/:id/submissions', async (req, res) => {
 
     const pushType = displayConfig.showResult ? 'rough' : 'compile';
     res.render('submissions', {
+      vjudge: require("../libs/vjudge"),
       contest: contest,
       items: judge_state.map(x => ({
         info: getSubmissionInfo(x, displayConfig),
@@ -601,7 +602,7 @@ app.get('/contest/submission/:id', async (req, res) => {
 
     if (judge.problem.type !== 'submit-answer') {
       judge.codeLength = Buffer.from(judge.code).length;
-      judge.code = await syzoj.utils.highlight(judge.code, syzoj.languages[judge.language].highlight);
+      judge.code = await syzoj.utils.highlight(judge.code, (judge.problem.getVJudgeLanguages() || syzoj.languages)[judge.language].highlight);
     }
 
     res.render('submission', {
@@ -700,7 +701,8 @@ app.get('/contest/:id/problem/:pid', async (req, res) => {
       problem: problem,
       state: state,
       lastLanguage: res.locals.user ? await res.locals.user.getLastSubmitLanguage() : null,
-      testcases: testcases
+      testcases: testcases,
+      languages: problem.getVJudgeLanguages()
     });
   } catch (e) {
     syzoj.log(e);
