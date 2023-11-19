@@ -32,7 +32,8 @@
     },
     "user": {
       "show": true,
-      "rating": 1500
+      "rating": 1500,
+      "ban": false
     }
   },
   "sorting": {

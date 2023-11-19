@@ -274,6 +274,8 @@ app.post('/user/:id/edit', async (req, res) => {
       user.disable_login = (req.body.disable_login == 'on');
     }
 
+    if (res.locals.user && await res.locals.user.hasPrivilege('manage_user')) user.is_show = (req.body.is_show == 'on');
+
     await user.save();
 
     if (user.id === res.locals.user.id) res.locals.user = user;

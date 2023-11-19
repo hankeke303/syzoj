@@ -15,7 +15,7 @@
 	    	<input type="text" id="username" name="username" value="<%= edited_user.username %>"<% if (!user.allowedManage) { %> readonly<% } %>>
       </div>
       <div class="field">
-	    	<label for="realname">真实姓名</label>
+	    	<label for="realname">姓名</label>
 	    	<input type="text" id="realname" name="realname" value="<%= edited_user.realname %>">
 	    </div>
       <div class="field">
@@ -91,6 +91,13 @@
         </div>
       </div>
       <% if (user.allowedManage) { %>
+        <div class="inline field">
+          <label class="ui header">显式在排行榜上</label>
+          <div class="ui toggle checkbox">
+            <input id="is_show" name="is_show" type="checkbox" <% if (edited_user.is_show) { %> checked<% } %>>
+            <label>　</label>
+          </div>
+        </div>
         <div class="inline field">
           <label class="ui header">禁止进入主站</label>
           <div class="ui toggle checkbox">
